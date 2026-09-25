@@ -1,0 +1,39 @@
+{
+  "name": "Linus Tech Tips (small)",
+  "description": "The same data as the ltt screen, drawn with the small font instead",
+
+  // No script. This screen reads the dataset that "ltt" already fetches, so the
+  // YouTube API is called once no matter how many screens show the result.
+  // Any number of screens can share a dataset this way; exactly one of them
+  // should have the script.
+  "dataset": "ltt",
+
+  // THIS is the whole switch between the two text renderers. "device" (the
+  // default) has the Pixoo draw text with its own fonts, on an overlay above
+  // the picture. "small" has the bridge render 3x5 glyphs into the image and
+  // push one frame.
+  //
+  //   small font   4px per character, 16 per line, rows 6px apart
+  //   font 2       5-11px per character, rows 9px apart, lowest row y=52
+  //
+  // The trade: no hardware scrolling, since the text is part of the picture.
+  "textMode": "small",
+
+  "background": "../ltt/ltt.gif",
+
+  // Three rows fit here where font 2 manages two, and they sit lower because
+  // the small font clears the bottom edge that font 2 can't reach.
+  "rows": [
+    { "label": "Subs", "value": "{{subs}}", "format": "compact", "fallback": "hidden",
+      "y": 42, "color": "#FF3B00" },
+    { "label": "Views", "value": "{{views}}", "format": "compact",
+      "y": 50, "color": "#FF3B00" },
+    { "label": "Videos", "value": "{{videos}}", "format": "commas",
+      "y": 58, "color": "grey" }
+  ],
+
+  "samples": [
+    { "subs": 42, "views": 938, "videos": 7 },
+    { "subs": 16900000, "views": 9709487658, "videos": 7873 }
+  ]
+}

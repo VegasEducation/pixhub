@@ -1,0 +1,18 @@
+node_modules/
+npm-debug.log*
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Runtime state
+data/
+*.tmp
+
+.DS_Store
+*.swp
+.idea/
+.vscode/

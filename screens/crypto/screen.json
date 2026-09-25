@@ -1,0 +1,45 @@
+{
+  "name": "Crypto prices",
+  "description": "Price and 24h direction for any CoinGecko coins",
+
+  "script": "fetch.sh",
+  "refresh": "5m",
+
+  "background": "bitcoin.gif",
+
+  // The script prints a JSON array, one entry per coin. "each" repeats this row
+  // over it, so adding a third coin to CRYPTO_COINS needs no change here —
+  // only "limit", which is how many will fit under the divider.
+  "rows": {
+    "each": "{{.}}",
+    "limit": 2,
+    "startY": 38,
+    "stepY": 11,
+
+    "label": "{{symbol}}",
+    "labelFormat": "upper",
+
+    "value": "{{current_price}}",
+    "format": "price",
+
+    "color": "trend:{{price_change_percentage_24h}}"
+  },
+
+  // Example payloads for `preview --samples`: the magnitudes the layout has to
+  // survive. Six-figure coins, sub-dollar coins and a long comma'd price all
+  // stress the label/value fit differently.
+  "samples": [
+    [
+      { "symbol": "btc", "current_price": 104250, "price_change_percentage_24h": 2.4 },
+      { "symbol": "eth", "current_price": 842.19, "price_change_percentage_24h": -1.1 }
+    ],
+    [
+      { "symbol": "btc", "current_price": 9840, "price_change_percentage_24h": 0 },
+      { "symbol": "doge", "current_price": 0.4271, "price_change_percentage_24h": 12.9 }
+    ],
+    [
+      { "symbol": "shib", "current_price": 0.0000241, "price_change_percentage_24h": -3.8 },
+      { "symbol": "eth", "current_price": 1908, "price_change_percentage_24h": 1.6 }
+    ]
+  ]
+}

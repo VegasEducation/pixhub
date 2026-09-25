@@ -1,0 +1,16 @@
+# Normalise line endings on checkout. This is not cosmetic: a screen script
+# that arrives with CRLF has "#!/bin/sh\r" as its shebang, which fails to
+# execute with a confusing "no such file or directory". Forcing LF keeps
+# scripts runnable after a clone on Windows.
+* text=auto eol=lf
+
+*.sh    text eol=lf
+*.py    text eol=lf
+*.js    text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
+
+# Binary — never touch these, and don't show them as diffs
+*.gif   binary
+*.png   binary
+*.jpg   binary

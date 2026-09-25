@@ -1,0 +1,56 @@
+name: pixhub
+
+services:
+  # Bridge between HTTP and the Pixoo's own protocol. Handles GIF chunking,
+  # palette conversion and resizing so pixhub doesn't have to.
+  #
+  # NOT our code: this is https://github.com/4ch1m/pixoo-rest by 4ch1m, pulled
+  # as a published image. It isn't official Divoom software either. See the
+  # Credits section of the README — the library it builds on is CC BY-NC-SA.
+  #
+  # Pinned to 1.6.2 on purpose: 2.x is a FastAPI rewrite that moved to port 8000
+  # and dropped the /sendGif and /brightness endpoints pixhub depends on.
+  pixoo-rest:
+    image: 4ch1m/pixoo-rest:1.6.2
+    container_name: pixoo-rest
+    environment:
+      - PIXOO_HOST=${PIXOO_IP:?set PIXOO_IP in .env to your Pixoo's LAN address}
+      - PIXOO_REST_HOST=0.0.0.0
+      # Pixoo is a product line: 16x16, 32x32 and 64x64 all exist. Both
+      # containers have to agree on which one you have.
+      - PIXOO_SCREEN_SIZE=${PIXOO_SIZE:-64}
+    # No host port published — pixhub reaches it over the compose network.
+    expose:
+      - "5000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5000/"]
+      interval: 15s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  pixhub:
+    build: .
+    container_name: pixhub
+    env_file:
+      - .env
+    environment:
+      - PIXOO_BRIDGE=http://pixoo-rest:5000
+      # The container always listens on 8080; only the host side is
+      # configurable, so the two can never drift apart.
+      - HTTP_PORT=8080
+    ports:
+      # Status page. Unauthenticated — keep it on your LAN.
+      - "${PIXHUB_PORT:-8080}:8080"
+    volumes:
+      # Your screens. Bind-mounted, so adding or editing one needs a restart,
+      # not a rebuild.
+      - ./screens:/app/screens
+      # Images shared between screens.
+      - ./assets:/app/assets
+      # Last good data per screen, so a restart doesn't blank the display.
+      - ./data:/app/data
+    depends_on:
+      pixoo-rest:
+        condition: service_healthy
+    restart: unless-stopped

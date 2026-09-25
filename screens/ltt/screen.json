@@ -1,0 +1,51 @@
+{
+  "name": "Linus Tech Tips",
+  "description": "Subscriber and view counts for a YouTube channel",
+
+  "script": "fetch.py",
+  "refresh": "30m",
+
+  // Skipped with a message if this isn't set, instead of failing every poll.
+  "requiredEnv": ["YT_API_KEY"],
+
+  "background": "ltt.gif",
+
+  // The artwork's divider sits at y=37, which leaves room for exactly two rows.
+  "rows": [
+    {
+      "label": "Subs",
+      "value": "{{subs}}",
+      "fallback": "hidden",
+      "y": 37,
+      "color": "#FF3B00",
+
+      // Counts span six orders of magnitude, so the format follows the number:
+      // a small channel gets exact figures, a large one gets 16.9M. First rule
+      // that matches wins; the last has no "if" and is the fallback.
+      "adapt": [
+        { "if": { "under": 10000 }, "format": "commas" },
+        { "format": "compact" }
+      ]
+    },
+    {
+      "label": "Views",
+      "value": "{{views}}",
+      "y": 48,
+      "color": "#FF3B00",
+      "adapt": [
+        { "if": { "under": 10000 }, "format": "commas" },
+        { "format": "compact" }
+      ]
+    }
+  ],
+
+  // Example payloads for `npm run preview -- ltt --samples`. Cover the extremes
+  // your layout has to survive — this is how you check the alignment holds at
+  // every magnitude without waiting for the real numbers to get there.
+  "samples": [
+    { "subs": 42, "views": 938 },
+    { "subs": 9840, "views": 421000 },
+    { "subs": 16900000, "views": 9709487658 },
+    { "subs": null, "views": 12300000 }
+  ]
+}

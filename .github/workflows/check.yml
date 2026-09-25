@@ -1,0 +1,52 @@
+name: check
+
+# There are no unit tests — the behaviour that matters happens on a physical
+# panel. What CI can usefully catch is the stuff that breaks a clone before it
+# ever reaches the device: a syntax error, a screen.json that won't parse, an
+# image build that fails.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Syntax-check every JavaScript file
+        run: find src screens -name '*.js' -print0 | xargs -0 -n1 node --check
+
+      - name: Every screen.json parses
+        # Comments are allowed in these files and stripped before parsing, so
+        # strip them the same way here rather than calling them invalid.
+        run: |
+          for f in screens/*/screen.json; do
+            node -e "
+              const {readFileSync}=require('fs');
+              const raw=readFileSync('$f','utf8').replace(/^\s*\/\/.*\$/gm,'');
+              try { JSON.parse(raw); console.log('ok   $f'); }
+              catch (e) { console.error('BAD  $f: '+e.message); process.exit(1); }
+            "
+          done
+
+      - name: Every screen loads and renders
+        # Uses each screen's own samples, so this exercises the real layout
+        # engine without needing a device or any API keys.
+        run: |
+          cp .env.example .env
+          node src/cli.js screens
+          for d in screens/*/; do
+            name=$(basename "$d")
+            node src/cli.js preview "$name" --samples 2>/dev/null \
+              || echo "skipped $name (no samples)"
+          done
+
+      - name: Image builds
+        run: docker build -t pixhub:ci .

@@ -1,0 +1,83 @@
+{
+  "name": "Next launch",
+  "description": "Vehicle, mission, date and countdown for the next rocket launch",
+
+  "script": "fetch.js",
+  // The anonymous tier allows ~15 requests/hour. Four an hour leaves headroom
+  // for restarts and manual refreshes.
+  "refresh": "15m",
+
+  // Longer than the default, because the mission name scrolls and needs time
+  // to make a full pass.
+  "duration": "45s",
+
+  "background": "spacex.gif",
+
+  // This artwork's divider is higher (y=23), so four lines fit underneath.
+  "items": [
+    {
+      "text": "{{rocket}}",
+      "format": "fitWords:62",
+      "y": 25,
+      "x": 1,
+      "color": "#4C9EDB"
+    },
+    {
+      "text": "{{mission}}",
+      "y": 34,
+      "x": 1,
+      "color": "white",
+      "scroll": true
+    },
+    {
+      "text": "{{net}}",
+      "format": "datetime",
+      "y": 43,
+      "x": 1,
+      "color": "grey"
+    },
+    {
+      // Only when the T-0 is firm. A countdown to a date the provider has only
+      // narrowed to "sometime in October" would imply precision that isn't there.
+      "when": "{{firm}}",
+      "text": "{{net}}",
+      "format": "countdown",
+      "prefix": "T-",
+      "y": 52,
+      "x": 1,
+      // Colour by launch status: green once confirmed, amber while the date is
+      // still to be confirmed.
+      "color": {
+        "match": "{{status}}",
+        "cases": { "Go": "green", "TBC": "amber", "TBD": "grey", "Hold": "red" },
+        "default": "grey"
+      }
+    },
+    {
+      // ...and the status word instead when it isn't.
+      "unless": "{{firm}}",
+      "text": "{{status}}",
+      "fallback": "TBD",
+      "y": 52,
+      "x": 1,
+      "color": "amber"
+    }
+  ],
+
+  // Example payloads for `preview --samples`. The second has an imprecise
+  // launch time, which is what makes the bottom line switch from a countdown
+  // to a status word — worth being able to see without waiting for it.
+  //
+  // The dates are deliberately far in the future so these don't expire into
+  // "LIVE". A side effect is that the countdown renders at its worst-case
+  // width ("T-26662d 16h") rather than a realistic one — which is arguably
+  // what you want a layout test to show.
+  "samples": [
+    { "rocket": "Falcon 9", "mission": "Starlink Group 17-38",
+      "net": "2099-08-08T14:00:00Z", "status": "Go", "firm": true },
+    { "rocket": "New Glenn", "mission": "Escapade", "net": "2099-10-01T00:00:00Z",
+      "status": "TBC", "firm": false },
+    { "rocket": "Electron", "mission": "There And Back Again",
+      "net": "2099-08-09T02:30:00Z", "status": "Go", "firm": true }
+  ]
+}

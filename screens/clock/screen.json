@@ -1,0 +1,26 @@
+{
+  "name": "Clock",
+  "description": "Time and date — the simplest possible screen, no script at all",
+
+  // No "script": this screen has no data source. {{$now}} is a built-in, so
+  // there is nothing to fetch. Start here when writing your own.
+  "background": "black.gif",
+  "duration": "15s",
+
+  "items": [
+    {
+      "text": "{{$now}}",
+      "format": "time",
+      "y": 24,
+      "align": "center",
+      "color": "accent"
+    },
+    {
+      "text": "{{$now}}",
+      "format": "date",
+      "y": 40,
+      "align": "center",
+      "color": "grey"
+    }
+  ]
+}

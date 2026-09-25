@@ -1,0 +1,9 @@
+{
+  "name": "Font test",
+  "description": "Draws the same text at several font ids to see which the device supports",
+
+  // No script — there's nothing to fetch. The layout comes from render.js,
+  // because each row needs its own font and screen.json can't express that.
+  "background": "black.gif",
+  "brightness": 40
+}

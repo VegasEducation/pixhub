@@ -1,0 +1,41 @@
+{
+  "name": "Width test card",
+  "description": "Checks the font width table against the real display",
+
+  "script": "fetch.js",
+  // Nothing changes unless you edit .env, so there's no reason to re-run it.
+  "refresh": "24h",
+
+  "background": "black.gif",
+  "brightness": 40,
+
+  "rows": {
+    "each": "{{lines}}",
+    "limit": 6,
+    // 7 rows of font 2 fill the panel exactly: 2..63.
+    "startY": 2,
+    "stepY": 9,
+
+    "label": "{{label}}",
+    "labelColor": "dim",
+
+    "value": "{{text}}",
+    "color": "accent",
+
+    // Cancel the global TEXT_RIGHT_MARGIN so lines sit truly flush against the
+    // edge — this screen is the one place where flush is the whole point.
+    "valueOffset": 2
+  },
+
+  "samples": [
+    { "lines": [
+      { "label": "$", "text": "$$$$$" },
+      { "label": ",", "text": ",,,,," },
+      { "label": ".", "text": "....." },
+      { "label": "%", "text": "%%%%%" },
+      { "label": "K", "text": "KKKKK" },
+      { "label": "M", "text": "MMMMM" },
+      { "label": "W", "text": "WWWWW" }
+    ] }
+  ]
+}

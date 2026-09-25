@@ -1,0 +1,40 @@
+{
+  "name": "pixhub",
+  "version": "1.0.0",
+  "description": "A modular screen engine for Divoom Pixoo 64 displays. A screen is a folder: a script that prints JSON, and a config that lays it out.",
+  "type": "module",
+  "main": "src/index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VegasEducation/pixhub.git"
+  },
+  "bugs": {
+    "url": "https://github.com/VegasEducation/pixhub/issues"
+  },
+  "homepage": "https://github.com/VegasEducation/pixhub#readme",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "gatherer": "MODE=gatherer node src/index.js",
+    "pusher": "MODE=pusher node src/index.js",
+    "screens": "node src/cli.js list",
+    "data": "node src/cli.js data",
+    "preview": "node src/cli.js preview",
+    "show": "node src/cli.js show",
+    "measure": "node src/cli.js measure",
+    "formats": "node src/cli.js formats",
+    "calibrate": "node src/cli.js calibrate"
+  },
+  "keywords": [
+    "pixoo",
+    "pixoo64",
+    "divoom",
+    "pixel-art",
+    "dashboard",
+    "led-matrix"
+  ],
+  "dependencies": {}
+}

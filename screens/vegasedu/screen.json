@@ -1,0 +1,49 @@
+{
+  "name": "Vegas Education",
+  "description": "Subscriber and view counts for the Vegas Education channel",
+
+  "script": "fetch.py",
+  // Quota is 10,000 units/day and a channels.list call costs 1, so this is
+  // nowhere near the limit. 30m simply matches how fast the numbers move.
+  "refresh": "30m",
+
+  "requiredEnv": ["YT_API_KEY"],
+
+  // 64x64 source, unlike the 512x512 art the other screens use. pixoo-rest
+  // downscales either way, so the size is only a question of how much detail
+  // survives, not whether it works.
+  "background": "vegasedu.gif",
+
+  "rows": [
+    {
+      "label": "Subs",
+      "value": "{{subs}}",
+      "fallback": "hidden",
+      "y": 37,
+      "color": "#FFB400",
+      "adapt": [
+        { "if": { "under": 10000 }, "format": "commas" },
+        { "format": "compact" }
+      ]
+    },
+    {
+      "label": "Views",
+      "value": "{{views}}",
+      "y": 48,
+      "color": "#FFB400",
+      "adapt": [
+        { "if": { "under": 10000 }, "format": "commas" },
+        { "format": "compact" }
+      ]
+    }
+  ],
+
+  // Today's real figures, plus the magnitudes this layout would have to
+  // survive if the channel grows an order of magnitude.
+  "samples": [
+    { "subs": 27400, "views": 3684048 },
+    { "subs": 9840, "views": 421000 },
+    { "subs": 1200000, "views": 486000000 },
+    { "subs": null, "views": 3684048 }
+  ]
+}
