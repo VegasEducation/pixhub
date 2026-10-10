@@ -19,8 +19,6 @@ export class PixooDevice {
   #timeoutMs;
   #log;
 
-  #lastBrightness = null;
-
   constructor({ baseUrl, commandDelayMs = 50, timeoutMs = 15_000, log }) {
     this.#baseUrl = baseUrl.replace(/\/+$/, '');
     this.#commandDelayMs = commandDelayMs;
@@ -149,12 +147,11 @@ export class PixooDevice {
       await this.sendText({ ...item, id: index + 1 });
     }
 
-    // Brightness rarely changes between screens, and it's a whole extra round
-    // trip. Only send it when it's actually different.
-    if (scene.brightness != null && scene.brightness !== this.#lastBrightness) {
+    // Sent every time, not only when it changes: the device forgets it on a
+    // power cycle and comes back at its own default, and we can't tell.
+    if (scene.brightness != null) {
       await this.#pause();
       await this.setBrightness(scene.brightness);
-      this.#lastBrightness = scene.brightness;
     }
   }
 
@@ -238,9 +235,9 @@ export class PixooDevice {
       });
     }
 
-    if (scene.brightness != null && scene.brightness !== this.#lastBrightness) {
+    // Every time, for the same reason as renderScene.
+    if (scene.brightness != null) {
       await this.setBrightness(scene.brightness);
-      this.#lastBrightness = scene.brightness;
     }
   }
 
